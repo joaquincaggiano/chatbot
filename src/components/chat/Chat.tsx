@@ -5,10 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import OpenAISvg from "../icons/OpenAISvg";
 import { Spinner } from "@radix-ui/themes";
+import { ChatWithMessages } from "@/interfaces/chat";
 
-export default function Chat() {
+interface Props {
+  chat: ChatWithMessages;
+}
+
+export default function ChatComponent({ chat }: Props) {
   const { messages, input, isLoading, stop, handleInputChange, handleSubmit } =
-    useChat();
+    useChat({
+      initialMessages: chat.messages,
+    });
+
   return (
     <div className="flex flex-col w-full max-w-2xl py-24 mx-auto stretch">
       {messages.map((m) => (
@@ -39,7 +47,14 @@ export default function Chat() {
         {isLoading && <Spinner />}
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(event) => {
+            handleSubmit(event, {
+              body: {
+                chatId: chat.id,
+                userMessage: input,
+              },
+            });
+          }}
           className="w-full max-w-2xl flex gap-2 fixed bottom-0 mb-8"
         >
           <Input
