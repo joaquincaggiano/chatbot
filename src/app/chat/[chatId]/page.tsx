@@ -6,7 +6,7 @@ type Params = Promise<{ chatId: string }>;
 const ChatPage = async ({ params }: { params: Params }) => {
   const { chatId } = await params;
   const chat = await getChat(chatId);
-  // console.log("chat: ", chat);
+
   return <Chat chat={chat} />;
 };
 

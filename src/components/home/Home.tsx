@@ -18,6 +18,7 @@ const Home = ({ userId }: Props) => {
 
     router.push(`/chat/${id}`);
   };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       {/* Hero Section */}

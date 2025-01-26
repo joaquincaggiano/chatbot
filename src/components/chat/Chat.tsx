@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import OpenAISvg from "../icons/OpenAISvg";
 import { Spinner } from "@radix-ui/themes";
@@ -57,7 +56,7 @@ export default function ChatComponent({ chat }: Props) {
           }}
           className="w-full max-w-2xl flex gap-2 fixed bottom-0 mb-8"
         >
-          <Input
+          <textarea
             className="w-full p-5 bg-[#2f2f2f] border-none rounded-[24px] font-medium text-base"
             value={input}
             placeholder="Escribe tu mensaje..."
