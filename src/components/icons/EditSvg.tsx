@@ -13,7 +13,7 @@ const EditSvg = ({ width = 24, height = 24, color = "#000000" }: Props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g
         id="SVGRepo_tracerCarrier"
         strokeLinecap="round"

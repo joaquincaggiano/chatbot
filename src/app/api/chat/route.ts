@@ -1,14 +1,32 @@
 import { openai } from "@ai-sdk/openai";
 import { Role } from "@prisma/client";
 import { prisma } from "@prisma/db";
-import { streamText } from "ai";
+import { streamText, generateText } from "ai";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
     const { messages, chatId, userMessage } = await req.json();
-    console.log("MESSAGES: ", messages);
+
+    let chatTitle: string | null = null;
+
+    console.log("Messages: ", messages.length);
+
+    if (messages.length === 1) {
+      console.log("Generating title");
+      const { text } = await generateText({
+        model: openai("gpt-4o"),
+        system:
+          "You are the best title generator in the world" +
+          "You should be concise and to the point" +
+          "You should be able to generate a title for a chat based on the messages",
+        prompt: `Analyze the following messages and return a concise title that reflects the main topic discussed:\n\n${messages
+          .map((msg: { content: string }) => msg.content)
+          .join("\n")}\n\nTitle:`,
+      });
+      chatTitle = text;
+    }
 
     const result = streamText({
       model: openai("gpt-4o"),
@@ -48,6 +66,13 @@ export async function POST(req: Request) {
         await prisma.message.createMany({
           data: messagesToCreate,
         });
+
+        if (chatTitle) {
+          await prisma.chat.update({
+            where: { id: chatId },
+            data: { title: chatTitle },
+          });
+        }
       },
     });
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { Button } from "@/components/ui/button";
 import OpenAISvg from "../icons/OpenAISvg";
 import { Spinner } from "@radix-ui/themes";
 import { ChatWithMessages } from "@/interfaces/chat";
+import SendSvg from "../icons/SendSvg";
 
 interface Props {
   chat: ChatWithMessages;
@@ -56,18 +56,38 @@ export default function ChatComponent({ chat }: Props) {
           }}
           className="w-full max-w-2xl flex gap-2 fixed bottom-0 mb-8"
         >
-          <textarea
-            className="w-full p-5 bg-[#2f2f2f] border-none rounded-[24px] font-medium text-base"
-            value={input}
-            placeholder="Escribe tu mensaje..."
-            onChange={handleInputChange}
-          />
-          {isLoading && (
-            <Button onClick={stop}>
-              <div className="w-5 h-5 bg-red-500 rounded-full" />
-            </Button>
-          )}
-          {/* <Button type="submit" className="bg-white text-black rounded-[8px]">Submit</Button> */}
+          <div className="w-full p-5 bg-[#2f2f2f] border-none rounded-[24px] flex">
+            <textarea
+              value={input}
+              placeholder="Escribe tu mensaje..."
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e, {
+                    body: {
+                      chatId: chat.id,
+                      userMessage: input,
+                    },
+                  });
+                }
+              }}
+              className="w-full bg-transparent border-none outline-none resize-none"
+            />
+            <div className="flex flex-col gap-5">
+              <button type="submit" disabled={isLoading}>
+                <SendSvg width={24} height={24} color="#ffffff" />
+              </button>
+
+              <button onClick={stop} disabled={!isLoading}>
+                <div
+                  className={`w-5 h-5 ${
+                    isLoading ? "bg-red-500" : "bg-red-500/20"
+                  } rounded-full`}
+                />
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
