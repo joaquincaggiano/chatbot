@@ -6,13 +6,18 @@ export const createChat = async (userId: string) => {
   try {
     const chat = await prisma.chat.create({
       data: {
+        title: "New chat",
         userId: userId,
       },
     });
     return { id: chat.id };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(error);
-    throw new Error("Failed to create chat");
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to create chat");
+    }
   }
 };
 

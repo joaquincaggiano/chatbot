@@ -80,17 +80,23 @@ model Authenticator {
 
 model Chat {
   id        String   @id @default(cuid())
+  title     String
   userId    String
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages Message[]
+
+  createdAt DateTime @default(now())
+
 }
 
 model Message {
   id String @id @default(cuid())
   role Role
   content String
-  chat Chat @relation(fields: [chatId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String
+
+  createdAt DateTime @default(now())
 }
 
 enum Role {

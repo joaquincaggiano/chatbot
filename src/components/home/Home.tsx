@@ -3,6 +3,7 @@ import { createChat } from "@/actions/chat";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import FeatureHomeCard from "./FeatureHomeCard";
+import { useState } from "react";
 
 interface Props {
   userId: string;
@@ -10,13 +11,22 @@ interface Props {
 
 const Home = ({ userId }: Props) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const loadingChat = async () => {
-    if (!userId) return;
+    try {
+      if (!userId) return;
 
-    const { id } = await createChat(userId);
+      setIsLoading(true);
 
-    router.push(`/chat/${id}`);
+      const { id } = await createChat(userId);
+
+      router.push(`/chat/${id}`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -36,10 +46,10 @@ const Home = ({ userId }: Props) => {
 
           <Button
             onClick={loadingChat}
+            disabled={isLoading}
             className="group inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            Comenzar Práctica
-            {/* <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> */}
+            {isLoading ? "Cargando..." : "Comenzar Práctica"}
           </Button>
 
           {/* Features */}
