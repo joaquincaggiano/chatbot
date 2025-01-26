@@ -11,10 +11,8 @@ export async function POST(req: Request) {
 
     let chatTitle: string | null = null;
 
-    console.log("Messages: ", messages.length);
 
     if (messages.length === 1) {
-      console.log("Generating title");
       const { text } = await generateText({
         model: openai("gpt-4o"),
         system:
