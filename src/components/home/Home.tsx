@@ -1,33 +1,27 @@
 "use client";
-import { createChat } from "@/actions/chat";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import FeatureHomeCard from "./FeatureHomeCard";
-import { useState } from "react";
 
-interface Props {
-  userId: string;
-}
-
-const Home = ({ userId }: Props) => {
+const Home = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const loadingChat = async () => {
-    try {
-      if (!userId) return;
+  // const loadingChat = async () => {
+  //   try {
+  //     if (!userId) return;
 
-      setIsLoading(true);
+  //     setIsLoading(true);
 
-      const { id } = await createChat(userId);
+  //     const { id } = await createChat(userId);
 
-      router.push(`/chat/${id}`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     router.push(`/chat/${id}`);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -45,11 +39,10 @@ const Home = ({ userId }: Props) => {
           </p>
 
           <Button
-            onClick={loadingChat}
-            disabled={isLoading}
+            onClick={() => router.push("/chat")}
             className="group inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            {isLoading ? "Cargando..." : "Comenzar Práctica"}
+            Comenzar Práctica
           </Button>
 
           {/* Features */}

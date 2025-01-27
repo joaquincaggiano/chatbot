@@ -1,25 +1,8 @@
 "use server";
 
 import { prisma } from "@prisma/db";
-
-export const createChat = async (userId: string) => {
-  try {
-    const chat = await prisma.chat.create({
-      data: {
-        title: "New chat",
-        userId: userId,
-      },
-    });
-    return { id: chat.id };
-  } catch (error: unknown) {
-    console.error(error);
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error("Failed to create chat");
-    }
-  }
-};
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const getChats = async (id: string) => {
   try {
@@ -54,5 +37,50 @@ export const getChat = async (chatId: string) => {
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch chat");
+  }
+};
+
+export const createChat = async (userId: string) => {
+  try {
+    const chat = await prisma.chat.create({
+      data: {
+        title: "New chat",
+        userId: userId,
+      },
+    });
+    return { id: chat.id };
+  } catch (error: unknown) {
+    console.error(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to create chat");
+    }
+  }
+};
+
+export const updateChatTitle = async (chatId: string, title: string) => {
+  try {
+    await prisma.chat.update({
+      where: { id: chatId },
+      data: { title },
+    });
+
+    revalidatePath(`/chat/${chatId}`);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to update chat title");
+  }
+};
+
+export const deleteChat = async (chatId: string, userId: string) => {
+  try {
+    await prisma.chat.delete({ where: { id: chatId, userId } });
+
+    revalidatePath("/chat");
+    redirect("/chat");
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete chat");
   }
 };

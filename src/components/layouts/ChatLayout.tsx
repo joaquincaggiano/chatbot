@@ -6,8 +6,9 @@ import ArrowLeftSvg from "../icons/ArrowLeftSvg";
 import { ReactNode, useState } from "react";
 import EditSvg from "../icons/EditSvg";
 import { useRouter } from "next/navigation";
-import { createChat } from "@/actions/chat";
+import { createChat, deleteChat } from "@/actions/chat";
 import { Spinner } from "@radix-ui/themes";
+import TrashSvg from "../icons/TrashSvg";
 
 interface Props {
   chats: Chat[];
@@ -18,7 +19,7 @@ interface Props {
 const ChatLayout = ({ chats, userId, children }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isDeleting, setIsDeleting] = useState(false);
   const loadingChat = async () => {
     try {
       if (!userId) return;
@@ -32,6 +33,17 @@ const ChatLayout = ({ chats, userId, children }: Props) => {
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteChat = async (chatId: string) => {
+    try {
+      setIsDeleting(true);
+      await deleteChat(chatId, userId);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -52,17 +64,31 @@ const ChatLayout = ({ chats, userId, children }: Props) => {
         </div>
         <div className="flex flex-col gap-5">
           {chats.map((chat) => (
-            <Link
-              key={chat.id}
-              href={`/chat/${chat.id}`}
-              className="hover:bg-[#1a181d] p-2 rounded-[10px] text-base font-normal"
-            >
-              {chat.title}
-            </Link>
+            <div key={chat.id} className="flex items-center justify-between">
+              <Link
+                href={`/chat/${chat.id}`}
+                className="text-base font-normal hover:bg-[#1a181d] rounded-[10px] p-2 w-full max-w-[85%]"
+              >
+                {chat.title}
+              </Link>
+
+              {isDeleting ? (
+                <Spinner />
+              ) : (
+                <button
+                  onClick={() => handleDeleteChat(chat.id)}
+                  className="hover:bg-[#1a181d] p-2 rounded-[10px] w-fit"
+                >
+                  <TrashSvg color="white" width={20} height={20} />
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </aside>
-      <main className="flex-1 bg-[#1a181d] h-screen overflow-y-auto">{children}</main>
+      <main className="flex-1 bg-[#1a181d] h-screen overflow-y-auto">
+        {children}
+      </main>
     </div>
   );
 };

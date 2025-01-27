@@ -7,13 +7,14 @@ import { ChatWithMessages } from "@/interfaces/chat";
 import SendSvg from "../icons/SendSvg";
 
 interface Props {
-  chat: ChatWithMessages;
+  chat?: ChatWithMessages;
+  userId: string;
 }
 
-export default function ChatComponent({ chat }: Props) {
+export default function ChatComponent({ chat, userId }: Props) {
   const { messages, input, isLoading, stop, handleInputChange, handleSubmit } =
     useChat({
-      initialMessages: chat.messages,
+      initialMessages: chat?.messages || [],
     });
 
   return (
@@ -49,7 +50,8 @@ export default function ChatComponent({ chat }: Props) {
           onSubmit={(event) => {
             handleSubmit(event, {
               body: {
-                chatId: chat.id,
+                chatId: chat?.id || undefined,
+                userId: userId,
                 userMessage: input,
               },
             });
@@ -66,7 +68,8 @@ export default function ChatComponent({ chat }: Props) {
                   e.preventDefault();
                   handleSubmit(e, {
                     body: {
-                      chatId: chat.id,
+                      chatId: chat?.id || undefined,
+                      userId: userId,
                       userMessage: input,
                     },
                   });

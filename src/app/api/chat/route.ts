@@ -1,3 +1,4 @@
+import { createChat, updateChatTitle } from "@/actions/chat";
 import { openai } from "@ai-sdk/openai";
 import { Role } from "@prisma/client";
 import { prisma } from "@prisma/db";
@@ -7,10 +8,15 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
-    const { messages, chatId, userMessage } = await req.json();
+    const { messages, chatId, userMessage, userId } = await req.json();
 
     let chatTitle: string | null = null;
+    let idChat = chatId;
 
+    if (!chatId) {
+      const { id } = await createChat(userId);
+      idChat = id;
+    }
 
     if (messages.length === 1) {
       const { text } = await generateText({
@@ -50,6 +56,7 @@ export async function POST(req: Request) {
                 : "",
           };
         });
+
         const messagesToCreate = [
           { role: "user", content: userMessage },
           ...moreMessages,
@@ -57,7 +64,7 @@ export async function POST(req: Request) {
           return {
             role: message.role as Role,
             content: message.content,
-            chatId: chatId,
+            chatId: idChat,
           };
         });
 
@@ -66,10 +73,7 @@ export async function POST(req: Request) {
         });
 
         if (chatTitle) {
-          await prisma.chat.update({
-            where: { id: chatId },
-            data: { title: chatTitle },
-          });
+          await updateChatTitle(idChat, chatTitle);
         }
       },
     });
