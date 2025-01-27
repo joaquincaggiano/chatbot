@@ -5,6 +5,7 @@ import OpenAISvg from "../icons/OpenAISvg";
 import { Spinner } from "@radix-ui/themes";
 import { ChatWithMessages } from "@/interfaces/chat";
 import SendSvg from "../icons/SendSvg";
+import StopSvg from "../icons/StopSvg";
 
 interface Props {
   chat?: ChatWithMessages;
@@ -83,10 +84,15 @@ export default function ChatComponent({ chat, userId }: Props) {
               </button>
 
               <button onClick={stop} disabled={!isLoading}>
-                <div
+                {/* <div
                   className={`w-5 h-5 ${
                     isLoading ? "bg-red-500" : "bg-red-500/20"
                   } rounded-full`}
+                /> */}
+                <StopSvg
+                  width={24}
+                  height={24}
+                  color={isLoading ? "#ffffff" : "#ffffff27"}
                 />
               </button>
             </div>

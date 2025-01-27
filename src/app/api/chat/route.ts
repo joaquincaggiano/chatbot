@@ -24,7 +24,8 @@ export async function POST(req: Request) {
         system:
           "You are the best title generator in the world" +
           "You should be concise and to the point" +
-          "You should be able to generate a title for a chat based on the messages",
+          "You should be able to generate a title for a chat based on the messages" +
+          "The title must be in spanish",
         prompt: `Analyze the following messages and return a concise title that reflects the main topic discussed:\n\n${messages
           .map((msg: { content: string }) => msg.content)
           .join("\n")}\n\nTitle:`,

@@ -16,7 +16,6 @@ const ChatPage = async ({ params }: { params: Params }) => {
   const { chatId } = await params;
   const chat = await getChat(chatId);
 
-
   return <Chat chat={chat} userId={session.user.id} />;
 };
 

@@ -2,7 +2,6 @@
 
 import { prisma } from "@prisma/db";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export const getChats = async (id: string) => {
   try {
@@ -48,6 +47,8 @@ export const createChat = async (userId: string) => {
         userId: userId,
       },
     });
+
+    revalidatePath(`/chat/${chat.id}`);
     return { id: chat.id };
   } catch (error: unknown) {
     console.error(error);
@@ -73,12 +74,11 @@ export const updateChatTitle = async (chatId: string, title: string) => {
   }
 };
 
-export const deleteChat = async (chatId: string, userId: string) => {
+export const deleteChat = async (chatId: string) => {
   try {
-    await prisma.chat.delete({ where: { id: chatId, userId } });
+    await prisma.chat.delete({ where: { id: chatId } });
 
-    revalidatePath("/chat");
-    redirect("/chat");
+    return { status: "success" };
   } catch (error) {
     console.error(error);
     throw new Error("Failed to delete chat");

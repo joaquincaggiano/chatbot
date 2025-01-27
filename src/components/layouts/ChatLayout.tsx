@@ -19,8 +19,10 @@ interface Props {
 const ChatLayout = ({ chats, userId, children }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const loadingChat = async () => {
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+
+  const createChatHandler = async () => {
     try {
       if (!userId) return;
 
@@ -38,12 +40,16 @@ const ChatLayout = ({ chats, userId, children }: Props) => {
 
   const handleDeleteChat = async (chatId: string) => {
     try {
-      setIsDeleting(true);
-      await deleteChat(chatId, userId);
+      setIsDeleting(chatId);
+      const {status} = await deleteChat(chatId);
+
+      if (status === "success") {
+        router.replace("/chat");
+      }
     } catch (error) {
       console.error(error);
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(null);
     }
   };
 
@@ -56,7 +62,7 @@ const ChatLayout = ({ chats, userId, children }: Props) => {
           </Link>
 
           <button
-            onClick={loadingChat}
+            onClick={createChatHandler}
             className="hover:bg-[#1a181d] p-2 rounded-[10px] w-fit"
           >
             {isLoading ? <Spinner /> : <EditSvg color="white" />}
@@ -64,20 +70,20 @@ const ChatLayout = ({ chats, userId, children }: Props) => {
         </div>
         <div className="flex flex-col gap-5">
           {chats.map((chat) => (
-            <div key={chat.id} className="flex items-center justify-between">
+            <div key={chat.id} className="flex items-center justify-between hover:bg-[#1a181d] rounded-[10px] p-2">
               <Link
                 href={`/chat/${chat.id}`}
-                className="text-base font-normal hover:bg-[#1a181d] rounded-[10px] p-2 w-full max-w-[85%]"
+                className="text-base font-normal w-full"
               >
                 {chat.title}
               </Link>
 
-              {isDeleting ? (
+              {isDeleting === chat.id ? (
                 <Spinner />
               ) : (
                 <button
                   onClick={() => handleDeleteChat(chat.id)}
-                  className="hover:bg-[#1a181d] p-2 rounded-[10px] w-fit"
+                  className="w-fit"
                 >
                   <TrashSvg color="white" width={20} height={20} />
                 </button>
