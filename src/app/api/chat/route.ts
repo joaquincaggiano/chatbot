@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       idChat = id;
     }
 
-    if (messages.length === 1) {
+    if (messages.length === 3) {
       const { text } = await generateText({
         model: openai("gpt-4o"),
         system:

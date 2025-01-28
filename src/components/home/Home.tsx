@@ -5,23 +5,6 @@ import FeatureHomeCard from "./FeatureHomeCard";
 
 const Home = () => {
   const router = useRouter();
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // const loadingChat = async () => {
-  //   try {
-  //     if (!userId) return;
-
-  //     setIsLoading(true);
-
-  //     const { id } = await createChat(userId);
-
-  //     router.push(`/chat/${id}`);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -38,12 +21,21 @@ const Home = () => {
             posibilidades de éxito.
           </p>
 
-          <Button
-            onClick={() => router.push("/chat")}
-            className="group inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            Comenzar Práctica
-          </Button>
+          <div className="flex justify-center items-center gap-5">
+            <Button
+              onClick={() => router.push("/analyze-cv")}
+              className="group inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              Analizemos tu cv
+            </Button>
+
+            <Button
+              onClick={() => router.push("/chat")}
+              className="group inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              Comenzar Práctica
+            </Button>
+          </div>
 
           {/* Features */}
           <div className="mt-24 grid md:grid-cols-3 gap-8">
